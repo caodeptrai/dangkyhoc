@@ -1,0 +1,53 @@
+<!-- Zalo Floating Button -->
+<div class="zalo-fab-wrapper" (mouseenter)="showZaloPhone = true" (mouseleave)="showZaloPhone = false">
+  <div class="zalo-phone-tooltip" *ngIf="showZaloPhone">
+    📞 {{ zaloPhone }}
+  </div>
+  <a href="https://zalo.me/{{ zaloPhone }}" target="_blank" class="zalo-fab" title="Liên hệ Zalo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo" class="zalo-icon" />
+  </a>
+</div>
+
+<!-- Floating Chat Button -->
+<button class="chat-fab" (click)="toggleChat()" [class.active]="isOpen">
+  <span class="fab-icon" *ngIf="!isOpen">💬</span>
+  <span class="fab-icon" *ngIf="isOpen">✕</span>
+</button>
+
+<!-- Chat Window -->
+<div class="chat-window" *ngIf="isOpen">
+  <div class="chat-header">
+    <div class="header-info">
+      <span class="header-avatar">🤖</span>
+      <div>
+        <strong>Trợ lý Hà Ninh</strong>
+        <span class="online-status">Online</span>
+      </div>
+    </div>
+    <button class="close-btn" (click)="toggleChat()">✕</button>
+  </div>
+
+  <div class="chat-body" #chatBody>
+    <div *ngFor="let msg of messages" class="message" [class.user]="msg.sender === 'user'"
+      [class.bot]="msg.sender === 'bot'">
+      <div class="bubble" [style.white-space]="'pre-line'">{{ msg.text }}</div>
+      <span class="time">{{ msg.timestamp | date:'HH:mm' }}</span>
+    </div>
+
+    <div class="message bot" *ngIf="loading">
+      <div class="bubble typing">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" [(ngModel)]="userInput" (keypress)="onKeyPress($event)" placeholder="Nhập tin nhắn..."
+      [disabled]="loading" />
+    <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim() || loading">
+      ➤
+    </button>
+  </div>
+</div>

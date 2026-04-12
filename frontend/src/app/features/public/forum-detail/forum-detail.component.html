@@ -1,0 +1,26 @@
+<section class="detail-page" *ngIf="!loading && post">
+  <div class="container">
+    <a routerLink="/forum" class="back-link">← Quay lại diễn đàn</a>
+    <article class="post-article">
+      <div class="post-hero" *ngIf="post.image_url">
+        <img [src]="post.image_url" [alt]="post.title" />
+      </div>
+      <h1>{{ post.title }}</h1>
+      <div class="post-info">
+        <span>📅 {{ post.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+        <span>👁️ {{ post.views }} lượt xem</span>
+      </div>
+      <div class="post-content" [innerHTML]="post.content"></div>
+      <div class="reaction-bar">
+        <!-- <button class="react-btn like" [class.active]="userReaction === 'like'" (click)="react('like')" [disabled]="reacting">
+          👍 {{ post.likes }}
+        </button>
+        <button class="react-btn dislike" [class.active]="userReaction === 'dislike'" (click)="react('dislike')" [disabled]="reacting">
+          👎 {{ post.dislikes }}
+        </button> -->
+      </div>
+    </article>
+  </div>
+</section>
+<div *ngIf="loading" class="loading-state">Đang tải bài viết...</div>
+<div *ngIf="!loading && !post" class="empty-state">Không tìm thấy bài viết.</div>

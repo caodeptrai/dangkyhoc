@@ -1,0 +1,73 @@
+<div class="admin-page">
+  <div class="page-header">
+    <h1>Quản lý Diễn đàn</h1>
+    <button class="btn-primary" (click)="openAdd()">+ Thêm bài viết</button>
+  </div>
+
+  <div class="alert" *ngIf="message" [class.success]="messageType==='success'" [class.error]="messageType==='error'">{{ message }}</div>
+
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tiêu đề</th>
+          <th>Lượt xem</th>
+          <th>Like</th>
+          <th>Dislike</th>
+          <th>Trạng thái</th>
+          <th>Ngày tạo</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let post of posts">
+          <td>{{ post.id }}</td>
+          <td class="title-col">{{ post.title }}</td>
+          <td>{{ post.views }}</td>
+          <td>{{ post.likes }}</td>
+          <td>{{ post.dislikes }}</td>
+          <td>
+            <span class="badge" [class.published]="post.is_published" [class.draft]="!post.is_published" (click)="togglePublish(post)" style="cursor:pointer">
+              {{ post.is_published ? 'Đã đăng' : 'Nháp' }}
+            </span>
+          </td>
+          <td>{{ post.created_at | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="btn-sm btn-edit" (click)="openEdit(post)">Sửa</button>
+            <button class="btn-sm btn-delete" (click)="delete(post.id)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loading && posts.length === 0" class="empty-state">Chưa có bài viết nào.</div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content modal-lg" (click)="$event.stopPropagation()">
+    <h2>{{ editingId ? 'Chỉnh sửa bài viết' : 'Thêm bài viết mới' }}</h2>
+    <form [formGroup]="postForm" (ngSubmit)="save()">
+      <div class="form-group">
+        <label>Tiêu đề *</label>
+        <input formControlName="title" />
+      </div>
+      <div class="form-group">
+        <label>URL hình ảnh</label>
+        <input formControlName="image_url" placeholder="https://..." />
+      </div>
+      <div class="form-group">
+        <label>Nội dung *</label>
+        <textarea formControlName="content" rows="10"></textarea>
+      </div>
+      <div class="form-group checkbox-group">
+        <label><input type="checkbox" formControlName="is_published" /> Xuất bản ngay</label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal()">Hủy</button>
+        <button type="submit" class="btn-primary" [disabled]="postForm.invalid">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

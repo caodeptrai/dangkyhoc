@@ -1,0 +1,106 @@
+<!-- Hero Banner -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Trung tâm Ngoại ngữ Hà Ninh</h1>
+    <p class="hero-subtitle">
+      Chúng tôi cam kết mang đến nền tảng giáo dục ngoại ngữ chất lượng cao,
+      giúp bạn chinh phục mục tiêu ngôn ngữ với phương pháp học hiện đại và hiệu quả.
+    </p>
+    <div class="hero-buttons">
+      <a routerLink="/courses" class="btn btn-primary">Xem khóa học</a>
+      <a routerLink="/contact" class="btn btn-secondary">Đăng ký tư vấn</a>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about section">
+  <div class="container">
+    <h2 class="section-title">Về chúng tôi</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          Hà Ninh là trung tâm ngoại ngữ uy tín với nhiều năm kinh nghiệm trong lĩnh vực đào tạo.
+          Chúng tôi tự hào mang đến môi trường học tập chuyên nghiệp, đội ngũ giảng viên giàu kinh nghiệm
+          và chương trình đào tạo được thiết kế theo chuẩn quốc tế.
+        </p>
+        <p>
+          Với phương châm "Học để thành công", chúng tôi không ngừng cải tiến và nâng cao chất lượng
+          dịch vụ để đồng hành cùng học viên trên con đường chinh phục ngôn ngữ.
+        </p>
+      </div>
+      <div class="about-image">
+        <div class="image-placeholder">
+          <span>Hình ảnh trung tâm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Advantages Section -->
+<section class="advantages section">
+  <div class="container">
+    <h2 class="section-title">Lợi thế của chúng tôi</h2>
+    <div class="advantages-grid">
+      <div class="advantage-card">
+        <div class="advantage-icon">👨‍🏫</div>
+        <h3>Giảng viên chất lượng</h3>
+        <p>Đội ngũ giảng viên giàu kinh nghiệm, có chứng chỉ quốc tế</p>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">📚</div>
+        <h3>Chương trình chuẩn quốc tế</h3>
+        <p>Giáo trình được thiết kế theo khung tham chiếu Châu Âu</p>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">✅</div>
+        <h3>Cam kết đầu ra</h3>
+        <p>Đảm bảo đạt mục tiêu sau khi hoàn thành khóa học</p>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">👥</div>
+        <h3>Lớp học quy mô nhỏ</h3>
+        <p>Mỗi lớp chỉ 8-12 học viên để tối ưu tương tác</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Courses Section -->
+<section class="courses section">
+  <div class="container">
+    <h2 class="section-title">Khóa học nổi bật</h2>
+    <div *ngIf="loading" class="loading-state">
+      <p>Đang tải khóa học...</p>
+    </div>
+    <div *ngIf="!loading" class="courses-grid">
+      <a *ngFor="let course of courses; trackBy: trackById" [routerLink]="['/courses', course.id]" class="course-card">
+        <div class="course-image">
+          <img *ngIf="course.image_url" [src]="course.image_url" [alt]="course.title" />
+          <div *ngIf="!course.image_url" class="course-image-placeholder">📖</div>
+        </div>
+        <div class="course-content">
+          <h3 class="course-title">{{ course.title }}</h3>
+          <div class="course-meta">
+            <span class="course-language">{{ course.language }}</span>
+            <span class="course-level">{{ course.level }}</span>
+          </div>
+          <p class="course-tuition">{{ course.tuition_fee.toLocaleString('vi-VN') }}đ</p>
+          <p class="course-duration">Thời lượng: {{ course.duration }}</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta section">
+  <div class="container">
+    <div class="cta-content">
+      <h2 class="cta-title">Sẵn sàng bắt đầu hành trình học ngoại ngữ?</h2>
+      <p class="cta-subtitle">Đăng ký ngay hôm nay để nhận tư vấn miễn phí từ đội ngũ chuyên gia của chúng tôi.</p>
+      <a routerLink="/contact" class="btn btn-cta">Liên hệ đăng ký</a>
+    </div>
+  </div>
+</section>

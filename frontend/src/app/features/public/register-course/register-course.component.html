@@ -1,0 +1,132 @@
+<div class="register-course-container">
+  <header class="page-header">
+    <h1>Đăng ký Khóa học</h1>
+  </header>
+
+  @if (successMessage) {
+    <div class="success-alert">
+      {{ successMessage }}
+    </div>
+  }
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+    <div class="form-group">
+      <label for="full_name">Họ và tên <span class="required">*</span></label>
+      <input
+        id="full_name"
+        type="text"
+        formControlName="full_name"
+        class="form-input"
+        placeholder="Nhập họ và tên"
+      />
+      @if (f['full_name'].invalid && f['full_name'].touched) {
+        <span class="error-message">Vui lòng nhập họ và tên</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Số điện thoại <span class="required">*</span></label>
+      <input
+        id="phone"
+        type="text"
+        formControlName="phone"
+        class="form-input"
+        placeholder="Nhập số điện thoại (9-11 chữ số)"
+      />
+      @if (f['phone'].invalid && f['phone'].touched) {
+        <span class="error-message">
+          @if (f['phone'].errors?.['required']) {
+            Vui lòng nhập số điện thoại
+          } @else if (f['phone'].errors?.['pattern']) {
+            Số điện thoại phải có 9-11 chữ số
+          }
+        </span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email <span class="required">*</span></label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        class="form-input"
+        placeholder="Nhập email"
+      />
+      @if (f['email'].invalid && f['email'].touched) {
+        <span class="error-message">Vui lòng nhập email hợp lệ</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="date_of_birth">Ngày sinh</label>
+      <input
+        id="date_of_birth"
+        type="date"
+        formControlName="date_of_birth"
+        class="form-input"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Giới tính</label>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" formControlName="gender" value="Nam" />
+          Nam
+        </label>
+        <label class="radio-label">
+          <input type="radio" formControlName="gender" value="Nữ" />
+          Nữ
+        </label>
+        <label class="radio-label">
+          <input type="radio" formControlName="gender" value="Khác" />
+          Khác
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="address">Địa chỉ</label>
+      <input
+        id="address"
+        type="text"
+        formControlName="address"
+        class="form-input"
+        placeholder="Nhập địa chỉ"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="course_id">Khóa học <span class="required">*</span></label>
+      <select id="course_id" formControlName="course_id" class="form-input form-select">
+        <option value="">-- Chọn khóa học --</option>
+        @for (course of courses; track course.id) {
+          <option [value]="course.id">{{ course.title }}</option>
+        }
+      </select>
+      @if (f['course_id'].invalid && f['course_id'].touched) {
+        <span class="error-message">Vui lòng chọn khóa học</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="note">Ghi chú</label>
+      <textarea
+        id="note"
+        formControlName="note"
+        class="form-input form-textarea"
+        placeholder="Ghi chú thêm (nếu có)"
+        rows="4"
+      ></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn" [disabled]="loading">
+      {{ loading ? 'Đang gửi...' : 'Gửi đăng ký' }}
+    </button>
+
+    <div class="form-footer">
+      <a routerLink="/courses" class="back-link">← Quay lại danh sách khóa học</a>
+    </div>
+  </form>
+</div>

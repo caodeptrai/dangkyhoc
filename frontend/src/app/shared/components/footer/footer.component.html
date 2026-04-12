@@ -1,0 +1,31 @@
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>🌐 {{ settings.center_name ? settings.center_name : 'Hà Ninh' }}</h3>
+        <p>Trung tâm ngoại ngữ hàng đầu với đội ngũ giảng viên chất lượng, chương trình đào tạo hiện đại và cam kết đầu
+          ra cho học viên.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Liên kết</h4>
+        <ul>
+          <li><a routerLink="/">Trang chủ</a></li>
+          <li><a routerLink="/courses">Khóa học</a></li>
+          <li><a routerLink="/contact">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <ul class="contact-info">
+          <li *ngFor="let line of addressLines">📍 {{ line }}</li>
+          <li>📞 {{ settings.center_phone ? settings.center_phone : '0123 456 789' }}</li>
+          <li>📧 {{ settings.center_email ? settings.center_email : 'info@Hà Ninh.vn' }}</li>
+          <li>🕐 Thứ 2 - CN: 8:00 - 21:00</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {{ currentYear }} {{ settings.center_name ? settings.center_name : 'Hà Ninh' }}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

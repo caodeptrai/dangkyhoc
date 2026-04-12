@@ -1,0 +1,33 @@
+<section class="forum-page">
+  <div class="container">
+    <div class="section-header">
+      <h1>Diễn đàn</h1>
+      <p>Tin tức, bài viết và chia sẻ từ Hà Ninh</p>
+    </div>
+
+    <div class="posts-grid" *ngIf="!loading">
+      <a *ngFor="let post of posts" [routerLink]="['/forum', post.id]" class="post-card">
+        <div class="post-image">
+          <img [src]="post.image_url || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400'"
+            [alt]="post.title"
+            (error)="$any($event.target).src = 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400'" />
+        </div>
+        <div class="post-body">
+          <h3>{{ post.title }}</h3>
+          <p class="post-excerpt">{{ post.content | slice:0:120 }}...</p>
+          <div class="post-meta">
+            <span>📅 {{ post.created_at | date:'dd/MM/yyyy' }}</span>
+            <div class="post-stats">
+              <span>👁️ {{ post.views }}</span>
+              <!-- <span>👍 {{ post.likes }}</span>
+              <span>👎 {{ post.dislikes }}</span> -->
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">Đang tải...</div>
+    <div *ngIf="!loading && posts.length === 0" class="empty-state">Chưa có bài viết nào.</div>
+  </div>
+</section>

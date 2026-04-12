@@ -1,0 +1,92 @@
+<div class="admin-page">
+  <div class="page-header">
+    <h1>Quản lý Giảng viên</h1>
+    <button class="btn-primary" (click)="openAdd()">+ Thêm giảng viên</button>
+  </div>
+
+  <div class="alert" *ngIf="message" [class.success]="messageType==='success'" [class.error]="messageType==='error'">{{ message }}</div>
+
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Họ tên</th>
+          <th>SĐT</th>
+          <th>Email</th>
+          <th>Chuyên ngành</th>
+          <th>Trạng thái</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let inst of instructors">
+          <td>{{ inst.id }}</td>
+          <td>
+            <div class="instructor-info">
+              <img [src]="inst.avatar_url || 'https://ui-avatars.com/api/?name=' + inst.full_name" class="avatar-sm" alt="" />
+              {{ inst.full_name }}
+            </div>
+          </td>
+          <td>{{ inst.phone }}</td>
+          <td>{{ inst.email }}</td>
+          <td>{{ inst.specialization }}</td>
+          <td>
+            <span class="badge" [class.active]="inst.is_active" [class.inactive]="!inst.is_active">
+              {{ inst.is_active ? 'Hoạt động' : 'Ngưng' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-sm btn-edit" (click)="openEdit(inst)">Sửa</button>
+            <button class="btn-sm btn-delete" (click)="delete(inst.id)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loading && instructors.length === 0" class="empty-state">Chưa có giảng viên nào.</div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>{{ editingId ? 'Cập nhật giảng viên' : 'Thêm giảng viên' }}</h2>
+    <form [formGroup]="instructorForm" (ngSubmit)="save()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Họ tên *</label>
+          <input formControlName="full_name" />
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <input formControlName="phone" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input formControlName="email" type="email" />
+        </div>
+        <div class="form-group">
+          <label>Chuyên ngành</label>
+          <input formControlName="specialization" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>URL ảnh đại diện</label>
+        <input formControlName="avatar_url" />
+      </div>
+      <div class="form-group">
+        <label>Tiểu sử</label>
+        <textarea formControlName="bio" rows="3"></textarea>
+      </div>
+      <div class="form-group checkbox-group">
+        <label><input type="checkbox" formControlName="is_active" /> Đang hoạt động</label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal()">Hủy</button>
+        <button type="submit" class="btn-primary" [disabled]="instructorForm.invalid">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

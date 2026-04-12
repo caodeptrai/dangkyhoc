@@ -1,0 +1,36 @@
+<div class="admin-page">
+  <div class="page-header">
+    <h1>Cài đặt trung tâm</h1>
+    <button class="btn-primary" (click)="save()" [disabled]="saving">
+      {{ saving ? 'Đang lưu...' : 'Lưu thay đổi' }}
+    </button>
+  </div>
+
+  <div class="alert" *ngIf="message" [class.success]="messageType==='success'" [class.error]="messageType==='error'">{{ message }}</div>
+
+  <div class="settings-card" *ngIf="!loading">
+    <div *ngFor="let s of settings" class="setting-row">
+      <ng-container *ngIf="!isImageSetting(s.setting_key)">
+        <label>{{ getLabel(s.setting_key) }}</label>
+        <input [(ngModel)]="s.setting_value" />
+      </ng-container>
+
+      <ng-container *ngIf="isImageSetting(s.setting_key)">
+        <label>{{ getLabel(s.setting_key) }}</label>
+        <div class="image-manager">
+          <div class="image-list">
+            <div *ngFor="let url of imageUrls; let i = index" class="image-item">
+              <img [src]="url" alt="Intro image" (error)="$any($event.target).src = 'https://via.placeholder.com/200'" />
+              <button class="remove-btn" (click)="removeImage(i)">✕</button>
+            </div>
+          </div>
+          <div class="add-image">
+            <input [(ngModel)]="newImageUrl" placeholder="Nhập URL hình ảnh..." (keyup.enter)="addImage()" />
+            <button class="btn-add" (click)="addImage()">Thêm</button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div *ngIf="loading" class="loading-state">Đang tải...</div>
+</div>

@@ -1,0 +1,22 @@
+main {
+  min-height: calc(100vh - 64px - 200px);
+}
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 260px;
+  background: #f5f7fa;
+  min-height: 100vh;
+  transition: margin-left 0.3s;
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 68px;
+  }
+}

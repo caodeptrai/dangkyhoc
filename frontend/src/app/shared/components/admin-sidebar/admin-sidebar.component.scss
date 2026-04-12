@@ -1,0 +1,129 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: #1e272e;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &.collapsed {
+    width: 68px;
+    .brand-text, .user-name, .nav-label { display: none; }
+    .sidebar-user { justify-content: center; }
+    .nav-item { justify-content: center; padding: 12px; }
+    .nav-icon { margin-right: 0; }
+  }
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+
+  .brand-icon { font-size: 1.3rem; }
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  &:hover { background: rgba(255,255,255,0.1); color: #fff; }
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  .user-avatar { font-size: 1.5rem; }
+  .user-name { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 11px 20px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+
+  .nav-icon {
+    font-size: 1.15rem;
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+
+  &.active {
+    background: rgba(66, 165, 245, 0.2);
+    color: #42a5f5;
+    border-right: 3px solid #42a5f5;
+  }
+}
+
+.nav-logout {
+  color: rgba(239, 83, 80, 0.85);
+  &:hover { background: rgba(239, 83, 80, 0.12); color: #ef5350; }
+}
+
+.nav-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 8px 16px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 68px;
+    .brand-text, .user-name, .nav-label { display: none; }
+    .sidebar-user { justify-content: center; }
+    .nav-item { justify-content: center; padding: 12px; }
+    .nav-icon { margin-right: 0; }
+  }
+}

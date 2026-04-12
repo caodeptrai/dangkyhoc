@@ -1,0 +1,53 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1 class="login-title">
+      <span class="icon">🛡️</span>
+      Admin Login
+    </h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Tên đăng nhập</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Nhập tên đăng nhập"
+          [class.error]="f['username'].invalid && f['username'].touched"
+        />
+        @if (f['username'].invalid && f['username'].touched) {
+          <span class="field-error">Tên đăng nhập là bắt buộc</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <div class="password-wrapper">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Nhập mật khẩu"
+            [class.error]="f['password'].invalid && f['password'].touched"
+          />
+          <button type="button" class="toggle-password" (click)="showPassword = !showPassword">
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (f['password'].invalid && f['password'].touched) {
+          <span class="field-error">Mật khẩu là bắt buộc</span>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-message">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        {{ loading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
+      </button>
+    </form>
+
+    <a routerLink="/" class="back-link">← Quay lại trang chủ</a>
+  </div>
+</div>

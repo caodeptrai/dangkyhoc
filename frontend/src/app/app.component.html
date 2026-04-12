@@ -1,0 +1,17 @@
+<!-- Public Layout -->
+<app-navbar *ngIf="!isAdminRoute"></app-navbar>
+
+<main *ngIf="!isAdminRoute || isAdminLogin">
+  <router-outlet *ngIf="!isAdminRoute || isAdminLogin"></router-outlet>
+</main>
+
+<app-footer *ngIf="!isAdminRoute"></app-footer>
+<app-chatbot-widget *ngIf="!isAdminRoute"></app-chatbot-widget>
+
+<!-- Admin Layout with Sidebar -->
+<div class="admin-layout" *ngIf="isAdminRoute && !isAdminLogin">
+  <app-admin-sidebar></app-admin-sidebar>
+  <div class="admin-main">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<aside class="sidebar" [ngClass]="{'collapsed': collapsed}">
+  <div class="sidebar-header">
+    <a routerLink="/admin/dashboard" class="sidebar-brand">
+      
+      <span class="brand-text"> Ha Ninh Center</span>
+    </a>
+    <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">👤</div>
+    <span class="user-name">{{ adminName }}</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/admin/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-item">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Dashboard</span>
+    </a>
+    <a routerLink="/admin/courses" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon">📚</span>
+      <span class="nav-label">Khóa học</span>
+    </a>
+    <a routerLink="/admin/instructors" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon">👨‍🏫</span>
+      <span class="nav-label">Giảng viên</span>
+    </a>
+    <a routerLink="/admin/registrations" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Đăng ký</span>
+    </a>
+    <a routerLink="/admin/contacts" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon">📧</span>
+      <span class="nav-label">Tư vấn</span>
+    </a>
+    <a routerLink="/admin/forum" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon">📝</span>
+      <span class="nav-label">Diễn đàn</span>
+    </a>
+    <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Cài đặt</span>
+    </a>
+
+    <div class="nav-divider"></div>
+
+    <a routerLink="/" class="nav-item nav-external">
+      <span class="nav-icon">🌐</span>
+      <span class="nav-label">Xem website</span>
+    </a>
+    <button class="nav-item nav-logout" (click)="logout()">
+      <span class="nav-icon">🚪</span>
+      <span class="nav-label">Đăng xuất</span>
+    </button>
+  </nav>
+</aside>

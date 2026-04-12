@@ -1,0 +1,92 @@
+<div class="course-list-container">
+  <header class="page-header">
+    <h1>Danh sách Khóa học</h1>
+    <p class="subtitle">Khám phá các khóa học ngoại ngữ phù hợp với mục tiêu của bạn</p>
+  </header>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="filter-input"
+      placeholder="Tìm kiếm theo tên khóa học..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="applyFilters()"
+    />
+    <select
+      class="filter-select"
+      [(ngModel)]="filterLanguage"
+      (ngModelChange)="applyFilters()"
+    >
+      <option value="">Tất cả ngôn ngữ</option>
+      <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
+    </select>
+    <select
+      class="filter-select"
+      [(ngModel)]="filterLevel"
+      (ngModelChange)="applyFilters()"
+    >
+      <option value="">Tất cả trình độ</option>
+      <option *ngFor="let lvl of levels" [value]="lvl">{{ lvl }}</option>
+    </select>
+    <input
+      type="number"
+      class="filter-input filter-input--number"
+      placeholder="Học phí tối thiểu"
+      [(ngModel)]="filterMinFee"
+      (ngModelChange)="applyFilters()"
+    />
+    <input
+      type="number"
+      class="filter-input filter-input--number"
+      placeholder="Học phí tối đa"
+      [(ngModel)]="filterMaxFee"
+      (ngModelChange)="applyFilters()"
+    />
+    <button type="button" class="filter-reset" (click)="resetFilters()">
+      Đặt lại
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Đang tải danh sách khóa học...</p>
+  </div>
+
+  <div *ngIf="!loading && filteredCourses.length === 0" class="empty-state">
+    <p>Không tìm thấy khóa học</p>
+  </div>
+
+  <div *ngIf="!loading && filteredCourses.length > 0" class="course-grid">
+    <article
+      *ngFor="let course of filteredCourses"
+      class="course-card"
+    >
+      <div class="course-card__image-wrap">
+        <img
+          [src]="course.image_url"
+          [alt]="course.title"
+          class="course-card__image"
+          (error)="$any($event.target).src = 'https://via.placeholder.com/400x200?text=Course'"
+        />
+      </div>
+      <div class="course-card__body">
+        <h2 class="course-card__title">{{ course.title }}</h2>
+        <div class="course-card__badges">
+          <span class="badge badge--language">{{ course.language }}</span>
+          <span class="badge badge--level">{{ course.level }}</span>
+        </div>
+        <p class="course-card__fee">{{ formatFee(course.tuition_fee) }}</p>
+        <p class="course-card__meta">
+          <span>{{ course.duration }}</span>
+          <span *ngIf="course.schedule"> · {{ course.schedule }}</span>
+        </p>
+        <p class="course-card__description">
+          {{ truncate(course.short_description, 100) }}
+        </p>
+        <a [routerLink]="['/courses', course.id]" class="course-card__link">
+          Xem chi tiết
+        </a>
+      </div>
+    </article>
+  </div>
+</div>

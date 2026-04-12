@@ -1,0 +1,93 @@
+<div class="contact-container">
+  <div class="contact-layout">
+    <aside class="contact-info">
+      <h2>Thông tin liên hệ</h2>
+      <div class="info-block">
+        <h3>Địa chỉ</h3>
+        <p>123 Đường ABC, Quận 1, TP. Hồ Chí Minh</p>
+      </div>
+      <div class="info-block">
+        <h3>Điện thoại</h3>
+        <p>028 1234 5678</p>
+      </div>
+      <div class="info-block">
+        <h3>Email</h3>
+        <p>contact&#64;trungtamngoaingu.vn</p>
+      </div>
+      <div class="info-block">
+        <h3>Giờ làm việc</h3>
+        <p>Thứ 2 - Thứ 6: 8:00 - 21:00<br />Thứ 7: 8:00 - 17:00</p>
+      </div>
+    </aside>
+
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+      <h2>Gửi yêu cầu tư vấn</h2>
+
+      @if (successMessage) {
+        <div class="success-alert" [class.error-alert]="isError">
+          {{ successMessage }}
+        </div>
+      }
+
+      <div class="form-group">
+        <label for="full_name">Họ và tên <span class="required">*</span></label>
+        <input
+          id="full_name"
+          type="text"
+          formControlName="full_name"
+          class="form-input"
+          placeholder="Nhập họ và tên"
+        />
+        @if (f['full_name'].invalid && f['full_name'].touched) {
+          <span class="error-message">Vui lòng nhập họ và tên</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Số điện thoại <span class="required">*</span></label>
+        <input
+          id="phone"
+          type="text"
+          formControlName="phone"
+          class="form-input"
+          placeholder="Nhập số điện thoại"
+        />
+        @if (f['phone'].invalid && f['phone'].touched) {
+          <span class="error-message">Vui lòng nhập số điện thoại</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="Nhập email"
+        />
+        @if (f['email'].invalid && f['email'].touched) {
+          <span class="error-message">Vui lòng nhập email hợp lệ</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="message">Nội dung <span class="required">*</span></label>
+        <textarea
+          id="message"
+          formControlName="message"
+          class="form-input form-textarea"
+          placeholder="Nhập nội dung cần tư vấn"
+          rows="5"
+        ></textarea>
+        @if (f['message'].invalid && f['message'].touched) {
+          <span class="error-message">Vui lòng nhập nội dung</span>
+        }
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        {{ loading ? 'Đang gửi...' : 'Gửi yêu cầu tư vấn' }}
+      </button>
+    </form>
+  </div>
+</div>

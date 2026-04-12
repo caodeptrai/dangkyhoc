@@ -1,0 +1,20 @@
+<nav class="admin-navbar">
+  <div class="admin-navbar-container">
+    <a routerLink="/admin/dashboard" class="admin-brand">
+      <span>🛡️ Hà Ninh Admin</span>
+    </a>
+
+    <ul class="admin-menu">
+      <li><a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a></li>
+      <li><a routerLink="/admin/courses" routerLinkActive="active">Khóa học</a></li>
+      <li><a routerLink="/admin/registrations" routerLinkActive="active">Đăng ký</a></li>
+      <li><a routerLink="/admin/contacts" routerLinkActive="active">Tư vấn</a></li>
+    </ul>
+
+    <div class="admin-actions">
+      <span class="admin-name">{{ adminName }}</span>
+      <a routerLink="/" class="btn-site">Xem site</a>
+      <button class="btn-logout" (click)="logout()">Đăng xuất</button>
+    </div>
+  </div>
+</nav>
