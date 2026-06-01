@@ -36,4 +36,45 @@ export class CourseDetailComponent implements OnInit {
       },
     });
   }
+
+  getStatusLabel(status?: string): string {
+    switch (status) {
+      case 'upcoming': return 'Sắp khai giảng';
+      case 'ongoing': return 'Đang học';
+      case 'finished': return 'Kết thúc';
+      default: return 'Sắp khai giảng';
+    }
+  }
+
+  getStatusClass(status?: string): string {
+    switch (status) {
+      case 'upcoming': return 'status--upcoming';
+      case 'ongoing': return 'status--ongoing';
+      case 'finished': return 'status--finished';
+      default: return 'status--upcoming';
+    }
+  }
+
+  isCourseFull(): boolean {
+    if (!this.course) return false;
+    if (!this.course.max_students || !this.course.enrolled_count) return false;
+    return this.course.enrolled_count >= this.course.max_students;
+  }
+
+  seatsRemaining(): number | null {
+    if (!this.course) return null;
+    if (!this.course.max_students || !this.course.enrolled_count) return null;
+    return Math.max(0, this.course.max_students - this.course.enrolled_count);
+  }
+
+  isRegistrationDisabled(): boolean {
+    if (!this.course) return true;
+    return this.course.status === 'finished' || this.isCourseFull();
+  }
+
+  formatStartDate(dateStr?: string | null): string {
+    if (!dateStr) return 'Chưa xác định';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
 }

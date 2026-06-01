@@ -38,7 +38,10 @@ export class AdminCourseManagementComponent implements OnInit {
       description: [''],
       instructor_id: [null],
       image_url: [''],
-      is_active: [1]
+      is_active: [1],
+      max_students: [null],
+      status: ['upcoming'],
+      start_date: ['']
     });
   }
 
@@ -79,13 +82,17 @@ export class AdminCourseManagementComponent implements OnInit {
       description: '',
       instructor_id: null,
       image_url: '',
-      is_active: 1
+      is_active: 1,
+      max_students: null,
+      status: 'upcoming',
+      start_date: ''
     });
     this.showForm = true;
     this.editingCourse = null;
   }
 
   openEdit(course: Course): void {
+    const startDate = course.start_date ? course.start_date.split('T')[0] : '';
     this.courseForm.patchValue({
       title: course.title,
       language: course.language,
@@ -97,7 +104,10 @@ export class AdminCourseManagementComponent implements OnInit {
       description: course.description ?? '',
       instructor_id: (course as any).instructor_id ?? null,
       image_url: course.image_url ?? '',
-      is_active: course.is_active ? 1 : 0
+      is_active: course.is_active ? 1 : 0,
+      max_students: course.max_students ?? null,
+      status: course.status ?? 'upcoming',
+      start_date: startDate
     });
     this.showForm = true;
     this.editingCourse = course;

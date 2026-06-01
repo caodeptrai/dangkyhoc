@@ -84,4 +84,23 @@ export class RegisterCourseComponent implements OnInit {
       },
     });
   }
+
+  isCourseFull(course: Course): boolean {
+    if (!course.max_students || !course.enrolled_count) return false;
+    return course.enrolled_count >= course.max_students;
+  }
+
+  isCourseDisabled(course: Course): boolean {
+    return course.status === 'finished' || this.isCourseFull(course);
+  }
+
+  getCourseOptionLabel(course: Course): string {
+    let label = course.title;
+    if (course.status === 'finished') {
+      label += ' (Đã kết thúc)';
+    } else if (this.isCourseFull(course)) {
+      label += ' (Hết chỗ)';
+    }
+    return label;
+  }
 }

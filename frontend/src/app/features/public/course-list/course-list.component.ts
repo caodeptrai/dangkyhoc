@@ -104,4 +104,45 @@ export class CourseListComponent implements OnInit {
       currency: 'VND',
     }).format(fee);
   }
+
+  getStatusLabel(status?: string): string {
+    switch (status) {
+      case 'upcoming': return 'Sắp khai giảng';
+      case 'ongoing': return 'Đang học';
+      case 'finished': return 'Kết thúc';
+      default: return 'Sắp khai giảng';
+    }
+  }
+
+  getStatusClass(status?: string): string {
+    switch (status) {
+      case 'upcoming': return 'badge--upcoming';
+      case 'ongoing': return 'badge--ongoing';
+      case 'finished': return 'badge--finished';
+      default: return 'badge--upcoming';
+    }
+  }
+
+  isCourseFull(course: Course): boolean {
+    if (!course.max_students || !course.enrolled_count) return false;
+    return course.enrolled_count >= course.max_students;
+  }
+
+  seatsRemaining(course: Course): number | null {
+    if (!course.max_students || !course.enrolled_count) return null;
+    return Math.max(0, course.max_students - course.enrolled_count);
+  }
+
+  isRegistrationDisabled(course: Course): boolean {
+    return course.status === 'finished' || this.isCourseFull(course);
+  }
+
+  getEnrollmentInfo(course: Course): string {
+    if (course.status === 'finished') return 'Đã kết thúc';
+    if (!course.max_students) return '';
+    const enrolled = course.enrolled_count || 0;
+    const remaining = this.seatsRemaining(course);
+    if (enrolled >= course.max_students) return 'Hết chỗ';
+    return `${remaining} chỗ trống (${enrolled}/${course.max_students})`;
+  }
 }

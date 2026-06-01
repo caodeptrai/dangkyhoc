@@ -28,6 +28,13 @@ ALTER TABLE courses ADD COLUMN IF NOT EXISTS instructor_id INT DEFAULT NULL;
 ALTER TABLE courses ADD CONSTRAINT fk_course_instructor FOREIGN KEY (instructor_id) REFERENCES instructors(id) ON DELETE SET NULL;
 
 -- ============================================================
+-- ALTER courses: add max_students, status, start_date
+-- ============================================================
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS max_students INT DEFAULT NULL;
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS status ENUM('upcoming','ongoing','finished') DEFAULT 'upcoming';
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS start_date DATE DEFAULT NULL;
+
+-- ============================================================
 -- Table: forum_posts
 -- ============================================================
 CREATE TABLE IF NOT EXISTS forum_posts (

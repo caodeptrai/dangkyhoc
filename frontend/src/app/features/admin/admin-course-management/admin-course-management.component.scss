@@ -76,6 +76,26 @@
     background-color: #9e9e9e;
     color: white;
   }
+
+  &.badge-upcoming {
+    background-color: #ff9800;
+    color: white;
+  }
+
+  &.badge-ongoing {
+    background-color: #2196f3;
+    color: white;
+  }
+
+  &.badge-finished {
+    background-color: #9e9e9e;
+    color: white;
+  }
+}
+
+.text-danger {
+  color: #d32f2f;
+  font-weight: 600;
 }
 
 .actions {

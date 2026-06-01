@@ -80,11 +80,20 @@
           <span>{{ course.duration }}</span>
           <span *ngIf="course.schedule"> · {{ course.schedule }}</span>
         </p>
+        <div class="course-card__badges">
+          <span class="badge" [ngClass]="getStatusClass(course.status)">{{ getStatusLabel(course.status) }}</span>
+          <span class="seats-info" *ngIf="course.max_students">
+            <span class="seats-full" *ngIf="isCourseFull(course)">Hết chỗ</span>
+            <span class="seats-remaining" *ngIf="!isCourseFull(course)">{{ seatsRemaining(course) }} chỗ trống</span>
+          </span>
+        </div>
         <p class="course-card__description">
           {{ truncate(course.short_description, 100) }}
         </p>
-        <a [routerLink]="['/courses', course.id]" class="course-card__link">
-          Xem chi tiết
+        <a [routerLink]="['/courses', course.id]" class="course-card__link" [class.link-disabled]="isRegistrationDisabled(course)">
+          <span *ngIf="course.status === 'finished'">Đã kết thúc</span>
+          <span *ngIf="isCourseFull(course) && course.status !== 'finished'">Hết chỗ</span>
+          <span *ngIf="!isRegistrationDisabled(course)">Xem chi tiết</span>
         </a>
       </div>
     </article>

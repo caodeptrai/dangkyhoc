@@ -21,9 +21,23 @@ exports.createRegistration = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Số điện thoại không hợp lệ.' });
     }
 
-    const [course] = await pool.query('SELECT id FROM courses WHERE id = ? AND is_active = 1', [course_id]);
+    const [course] = await pool.query('SELECT * FROM courses WHERE id = ? AND is_active = 1', [course_id]);
     if (course.length === 0) {
       return res.status(400).json({ success: false, message: 'Khóa học không tồn tại hoặc đã ngừng.' });
+    }
+
+    if (course[0].status === 'finished') {
+      return res.status(400).json({ success: false, message: 'Khóa học đã kết thúc, không thể đăng ký.' });
+    }
+
+    if (course[0].max_students != null) {
+      const [countResult] = await pool.query(
+        `SELECT COUNT(*) as cnt FROM course_registrations WHERE course_id = ? AND status != 'cancelled'`,
+        [course_id]
+      );
+      if (countResult[0].cnt >= course[0].max_students) {
+        return res.status(400).json({ success: false, message: 'Khóa học đã đủ số lượng học viên tối đa. Vui lòng chọn khóa học khác.' });
+      }
     }
 
     const [result] = await pool.query(
@@ -46,7 +60,9 @@ exports.getAllRegistrations = async (req, res, next) => {
   try {
     const { search, course_id } = req.query;
 
-    let sql = `SELECT cr.*, c.title as course_title
+    let sql = `SELECT cr.*, c.title as course_title, c.max_students as course_max_students,
+               c.status as course_status,
+               (SELECT COUNT(*) FROM course_registrations r WHERE r.course_id = cr.course_id AND r.status != 'cancelled') as enrolled_count
                FROM course_registrations cr
                LEFT JOIN courses c ON cr.course_id = c.id
                WHERE 1=1`;
@@ -72,6 +88,47 @@ exports.getAllRegistrations = async (req, res, next) => {
   }
 };
 
+async function autoUpdateCourseStatus(courseId) {
+  try {
+    const [rows] = await pool.query('SELECT * FROM courses WHERE id = ?', [courseId]);
+    if (rows.length === 0) return;
+
+    const course = rows[0];
+    if (!course.start_date) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const start = new Date(course.start_date);
+    start.setHours(0, 0, 0, 0);
+
+    const durationMatch = course.duration ? course.duration.match(/(\d+)/) : null;
+    const months = durationMatch ? parseInt(durationMatch[1]) : 3;
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + months);
+
+    let newStatus = course.status;
+    if (today < start) {
+      newStatus = 'upcoming';
+    } else if (today >= start && today <= end) {
+      newStatus = 'ongoing';
+    } else {
+      newStatus = 'finished';
+    }
+
+    if (newStatus !== course.status) {
+      await pool.query('UPDATE courses SET status = ? WHERE id = ?', [newStatus, courseId]);
+    }
+  } catch (err) {
+    console.error('Auto update course status error:', err);
+  }
+}
+
+async function recalcCourseStatus(courseId) {
+  if (!courseId) return;
+  await autoUpdateCourseStatus(courseId);
+}
+
 exports.updateRegistrationStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -85,12 +142,19 @@ exports.updateRegistrationStatus = async (req, res, next) => {
       });
     }
 
-    const [existing] = await pool.query('SELECT id FROM course_registrations WHERE id = ?', [id]);
+    const [existing] = await pool.query('SELECT * FROM course_registrations WHERE id = ?', [id]);
     if (existing.length === 0) {
       return res.status(404).json({ success: false, message: 'Không tìm thấy đăng ký.' });
     }
 
+    const oldStatus = existing[0].status;
+    const courseId = existing[0].course_id;
+
     await pool.query('UPDATE course_registrations SET status = ? WHERE id = ?', [status, id]);
+
+    if (oldStatus !== status) {
+      recalcCourseStatus(courseId);
+    }
 
     res.json({ success: true, message: 'Cập nhật trạng thái thành công.' });
   } catch (error) {

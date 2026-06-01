@@ -54,12 +54,32 @@
             <span class="value">{{ course.instructor_name }}</span>
           </div>
           <div class="info-row">
+            <span class="label">Ngày khai giảng</span>
+            <span class="value">{{ formatStartDate(course.start_date) }}</span>
+          </div>
+          <div class="info-row">
             <span class="label">Trạng thái</span>
-            <span class="value status" [class.active]="course.is_active" [class.inactive]="!course.is_active">
-              {{ course.is_active ? 'Đang mở' : 'Tạm đóng' }}
+            <span class="value status" [ngClass]="getStatusClass(course.status)">
+              {{ getStatusLabel(course.status) }}
             </span>
           </div>
-          <a [routerLink]="['/register', course.id]" class="register-btn">Đăng ký ngay</a>
+          <div class="info-row" *ngIf="course.max_students">
+            <span class="label">Sĩ số</span>
+            <span class="value">
+              <span class="seats-full-text" *ngIf="isCourseFull()">Hết chỗ ({{ course.enrolled_count || 0 }}/{{ course.max_students }})</span>
+              <span *ngIf="!isCourseFull()">
+                {{ seatsRemaining() }} chỗ trống ({{ course.enrolled_count || 0 }}/{{ course.max_students }})
+              </span>
+            </span>
+          </div>
+          <a
+            [routerLink]="['/register', course.id]"
+            class="register-btn"
+            [class.register-btn--disabled]="isRegistrationDisabled()">
+            <span *ngIf="course.status === 'finished'">Khóa học đã kết thúc</span>
+            <span *ngIf="isCourseFull() && course.status !== 'finished'">Hết chỗ đăng ký</span>
+            <span *ngIf="!isRegistrationDisabled()">Đăng ký ngay</span>
+          </a>
         </div>
       </div>
     </div>

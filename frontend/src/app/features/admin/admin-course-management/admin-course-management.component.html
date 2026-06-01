@@ -14,6 +14,7 @@
           <th>Cấp độ</th>
           <th>Học phí</th>
           <th>Giảng viên</th>
+          <th>Sĩ số</th>
           <th>Trạng thái</th>
           <th>Thao tác</th>
         </tr>
@@ -27,9 +28,15 @@
           <td>{{ course.tuition_fee | number:'1.0-0' }}đ</td>
           <td>{{ course.instructor_name || '—' }}</td>
           <td>
-            <span class="badge" [class.badge-active]="course.is_active" [class.badge-inactive]="!course.is_active">
-              {{ course.is_active ? 'Hoạt động' : 'Tạm dừng' }}
+            <span [class.text-danger]="course.max_students && course.enrolled_count >= course.max_students">
+              {{ course.enrolled_count || 0 }}
+              <ng-container *ngIf="course.max_students"> / {{ course.max_students }}</ng-container>
             </span>
+          </td>
+          <td>
+            <span class="badge badge-upcoming" *ngIf="course.status === 'upcoming'">Sắp khai giảng</span>
+            <span class="badge badge-ongoing" *ngIf="course.status === 'ongoing'">Đang học</span>
+            <span class="badge badge-finished" *ngIf="course.status === 'finished'">Kết thúc</span>
           </td>
           <td class="actions">
             <button type="button" class="btn-edit" (click)="openEdit(course)">Sửa</button>
@@ -77,6 +84,25 @@
       <div class="form-group">
         <label for="schedule">Lịch học <span class="required">*</span></label>
         <input id="schedule" type="text" formControlName="schedule" class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="max_students">Số học viên tối đa</label>
+        <input id="max_students" type="number" formControlName="max_students" class="form-input" min="1" placeholder="Để trống = không giới hạn" />
+      </div>
+
+      <div class="form-group">
+        <label for="start_date">Ngày khai giảng</label>
+        <input id="start_date" type="date" formControlName="start_date" class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label for="status">Trạng thái lớp học</label>
+        <select id="status" formControlName="status" class="form-input">
+          <option value="upcoming">Sắp khai giảng</option>
+          <option value="ongoing">Đang học</option>
+          <option value="finished">Kết thúc</option>
+        </select>
       </div>
 
       <div class="form-group">

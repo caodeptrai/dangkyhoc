@@ -12,6 +12,10 @@ export interface Course {
   instructor_name?: string;
   image_url: string;
   is_active: boolean;
+  max_students?: number | null;
+  status?: 'upcoming' | 'ongoing' | 'finished';
+  start_date?: string | null;
+  enrolled_count?: number;
   created_at: string;
   updated_at: string;
 }

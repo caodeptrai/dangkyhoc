@@ -102,12 +102,17 @@
       <select id="course_id" formControlName="course_id" class="form-input form-select">
         <option value="">-- Chọn khóa học --</option>
         @for (course of courses; track course.id) {
-          <option [value]="course.id">{{ course.title }}</option>
+          <option [value]="course.id" [disabled]="isCourseDisabled(course)">
+            {{ getCourseOptionLabel(course) }}
+          </option>
         }
       </select>
       @if (f['course_id'].invalid && f['course_id'].touched) {
         <span class="error-message">Vui lòng chọn khóa học</span>
       }
+      <div class="course-notice">
+        <small class="notice-text">* Các khóa học đã kết thúc hoặc hết chỗ sẽ không thể chọn.</small>
+      </div>
     </div>
 
     <div class="form-group">
