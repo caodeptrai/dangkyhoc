@@ -126,14 +126,21 @@ Frontend chạy tại: http://localhost:4200
 | GET    | /api/admin/contacts                    | Danh sách yêu cầu tư vấn |
 | PATCH  | /api/admin/contacts/:id/status         | Cập nhật trạng thái       |
 
-## Chatbot - Nâng cấp
+## Chatbot AI OpenRouter
 
-File `backend/src/services/chatbotService.js` hiện dùng rule-based.
-Để nâng cấp lên AI thật, thay đổi hàm `getResponse()`:
+Chatbot backend sử dụng OpenRouter với model mặc định `deepseek/deepseek-v4-flash`. Mỗi câu hỏi sẽ được bổ sung ngữ cảnh dữ liệu website hiện có (khóa học, học phí, lịch học, ngày khai giảng, giảng viên, cài đặt trung tâm và bài viết đã xuất bản) để trả lời các nội dung liên quan đến website, đặc biệt là tư vấn khóa học.
 
-- **OpenAI API**: Thêm `openai` package, gọi ChatCompletion API
-- **Local LLM**: Gọi HTTP tới local LLM server (Ollama, LM Studio...)
-- **RAG**: Kết hợp vector search trên dữ liệu khóa học + LLM
+Cấu hình trong `backend/.env`:
+
+```env
+OPENROUTER_API_KEY=your_openrouter_api_key
+OPENROUTER_MODEL=deepseek/deepseek-v4-flash
+OPENROUTER_SITE_URL=http://localhost:4200
+OPENROUTER_APP_NAME=Dang Ky Hoc Language Center
+OPENROUTER_TIMEOUT_MS=30000
+```
+
+Nếu chưa có `OPENROUTER_API_KEY` hoặc OpenRouter tạm lỗi, chatbot sẽ tự dùng phần trả lời dự phòng dựa trên dữ liệu website để API vẫn hoạt động.
 
 ## Dữ liệu mẫu
 
