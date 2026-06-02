@@ -14,10 +14,14 @@ exports.sendMessage = async (req, res, next) => {
 
     const botResponse = await chatbotService.getResponse(message);
 
-    await pool.query(
-      'INSERT INTO chatbot_logs (user_message, bot_response) VALUES (?, ?)',
-      [message, botResponse]
-    );
+    try {
+      await pool.query(
+        'INSERT INTO chatbot_logs (user_message, bot_response) VALUES (?, ?)',
+        [message, botResponse]
+      );
+    } catch (logError) {
+      console.warn(`[chatbot] Could not save chat log: ${logError.message}`);
+    }
 
     res.json({
       success: true,
