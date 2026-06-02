@@ -1,0 +1,23 @@
+<div class="toast-stack" aria-live="polite" aria-atomic="true">
+  <div class="toast" *ngFor="let toast of toasts$ | async" [class]="'toast ' + toast.type">
+    <span class="toast-icon" aria-hidden="true">
+      {{ toast.type === 'success' ? '✓' : toast.type === 'error' ? '!' : toast.type === 'warning' ? '⚠' : 'i' }}
+    </span>
+    <span class="toast-message">{{ toast.message }}</span>
+    <button type="button" class="toast-close" (click)="dismiss(toast.id)" aria-label="Đóng thông báo">×</button>
+  </div>
+</div>
+
+<div class="confirm-overlay" *ngIf="confirm$ | async as confirm" (click)="resolve(false)">
+  <section class="confirm-dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="confirm-icon" [class.danger]="confirm.danger">{{ confirm.danger ? '!' : '?' }}</div>
+    <div class="confirm-content">
+      <h2>{{ confirm.title }}</h2>
+      <p>{{ confirm.message }}</p>
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel" (click)="resolve(false)">{{ confirm.cancelText }}</button>
+      <button type="button" class="btn-confirm" [class.danger]="confirm.danger" (click)="resolve(true)">{{ confirm.confirmText }}</button>
+    </div>
+  </section>
+</div>
