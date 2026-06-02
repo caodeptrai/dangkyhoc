@@ -1,10 +1,19 @@
 <div class="admin-page">
+  <app-admin-feedback></app-admin-feedback>
   <div class="page-header">
     <h1>Quản lý Giảng viên</h1>
     <button class="btn-primary" (click)="openAdd()">+ Thêm giảng viên</button>
   </div>
 
-  <div class="alert" *ngIf="message" [class.success]="messageType==='success'" [class.error]="messageType==='error'">{{ message }}</div>
+  <div class="management-toolbar">
+    <input type="search" class="search-input" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Tìm kiếm ID, họ tên, SĐT, email, chuyên ngành..." />
+    <label class="page-size-label">Hiển thị
+      <select [(ngModel)]="pageSize" (ngModelChange)="changePage(1)">
+        <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }}</option>
+      </select>
+      dòng
+    </label>
+  </div>
 
   <div class="table-wrapper">
     <table class="data-table">
@@ -20,30 +29,37 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let inst of instructors">
-          <td>{{ inst.id }}</td>
-          <td>
+        <tr *ngFor="let inst of paginatedInstructors">
+          <td data-label="ID">{{ inst.id }}</td>
+          <td data-label="Họ tên">
             <div class="instructor-info">
               <img [src]="inst.avatar_url || 'https://ui-avatars.com/api/?name=' + inst.full_name" class="avatar-sm" alt="" />
               {{ inst.full_name }}
             </div>
           </td>
-          <td>{{ inst.phone }}</td>
-          <td>{{ inst.email }}</td>
-          <td>{{ inst.specialization }}</td>
-          <td>
+          <td data-label="SĐT">{{ inst.phone }}</td>
+          <td data-label="Email">{{ inst.email }}</td>
+          <td data-label="Chuyên ngành">{{ inst.specialization }}</td>
+          <td data-label="Trạng thái">
             <span class="badge" [class.active]="inst.is_active" [class.inactive]="!inst.is_active">
               {{ inst.is_active ? 'Hoạt động' : 'Ngưng' }}
             </span>
           </td>
-          <td>
+          <td data-label="Thao tác" class="row-actions">
             <button class="btn-sm btn-edit" (click)="openEdit(inst)">Sửa</button>
-            <button class="btn-sm btn-delete" (click)="delete(inst.id)">Xóa</button>
+            <button class="btn-sm btn-delete" (click)="delete(inst)">Xóa</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <div *ngIf="!loading && instructors.length === 0" class="empty-state">Chưa có giảng viên nào.</div>
+    <div *ngIf="!loading && filteredInstructors.length === 0" class="empty-state">Không tìm thấy giảng viên phù hợp.</div>
+  </div>
+
+  <div class="pagination" *ngIf="!loading && filteredInstructors.length > 0">
+    <span class="pagination-info">{{ (currentPage - 1) * pageSize + 1 }} - {{ currentPage * pageSize > filteredInstructors.length ? filteredInstructors.length : currentPage * pageSize }} / {{ filteredInstructors.length }}</span>
+    <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+    <button type="button" *ngFor="let page of visiblePages" [class.active]="page === currentPage" (click)="changePage(page)">{{ page }}</button>
+    <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
   </div>
 </div>
 

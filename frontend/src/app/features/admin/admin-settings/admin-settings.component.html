@@ -1,32 +1,38 @@
 <div class="admin-page">
+  <app-admin-feedback></app-admin-feedback>
   <div class="page-header">
-    <h1>Cài đặt trung tâm</h1>
-    <button class="btn-primary" (click)="save()" [disabled]="saving">
+    <div>
+      <h1>Cài đặt hệ thống</h1>
+      <p>Quản lý tên website, thông tin liên hệ, địa chỉ và các nội dung quan trọng hiển thị trên hệ thống.</p>
+    </div>
+    <button class="btn-primary" (click)="save()" [disabled]="saving || loading">
       {{ saving ? 'Đang lưu...' : 'Lưu thay đổi' }}
     </button>
   </div>
 
-  <div class="alert" *ngIf="message" [class.success]="messageType==='success'" [class.error]="messageType==='error'">{{ message }}</div>
-
   <div class="settings-card" *ngIf="!loading">
-    <div *ngFor="let s of settings" class="setting-row">
+    <div *ngFor="let s of settings" class="setting-row" [class.image-row]="isImageSetting(s.setting_key)">
       <ng-container *ngIf="!isImageSetting(s.setting_key)">
-        <label>{{ getLabel(s.setting_key) }}</label>
-        <input [(ngModel)]="s.setting_value" />
+        <label [for]="s.setting_key">{{ getLabel(s.setting_key) }}</label>
+        <small *ngIf="getHint(s.setting_key)">{{ getHint(s.setting_key) }}</small>
+        <textarea *ngIf="s.setting_key === 'center_address'; else textInput" [id]="s.setting_key" [(ngModel)]="s.setting_value" rows="3"></textarea>
+        <ng-template #textInput><input [id]="s.setting_key" [(ngModel)]="s.setting_value" /></ng-template>
       </ng-container>
 
       <ng-container *ngIf="isImageSetting(s.setting_key)">
         <label>{{ getLabel(s.setting_key) }}</label>
+        <small>{{ getHint(s.setting_key) }}</small>
         <div class="image-manager">
-          <div class="image-list">
+          <div class="image-list" *ngIf="imageUrls.length > 0">
             <div *ngFor="let url of imageUrls; let i = index" class="image-item">
               <img [src]="url" alt="Intro image" (error)="$any($event.target).src = 'https://via.placeholder.com/200'" />
-              <button class="remove-btn" (click)="removeImage(i)">✕</button>
+              <button type="button" class="remove-btn" (click)="removeImage(i)" aria-label="Xóa ảnh">✕</button>
             </div>
           </div>
+          <div *ngIf="imageUrls.length === 0" class="empty-images">Chưa có hình ảnh giới thiệu.</div>
           <div class="add-image">
             <input [(ngModel)]="newImageUrl" placeholder="Nhập URL hình ảnh..." (keyup.enter)="addImage()" />
-            <button class="btn-add" (click)="addImage()">Thêm</button>
+            <button type="button" class="btn-add" (click)="addImage()">Thêm ảnh</button>
           </div>
         </div>
       </ng-container>

@@ -1,146 +1,77 @@
 <div class="container">
+  <app-admin-feedback></app-admin-feedback>
   <div class="header">
     <h1>Quản lý Khóa học</h1>
     <button type="button" class="btn-add" (click)="openCreate()">Thêm khóa học</button>
+  </div>
+
+  <div class="management-toolbar">
+    <input type="search" class="search-input" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Tìm kiếm theo ID, tiêu đề, ngôn ngữ, cấp độ, giảng viên..." />
+    <label class="page-size-label">Hiển thị
+      <select [(ngModel)]="pageSize" (ngModelChange)="changePage(1)">
+        <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }}</option>
+      </select>
+      dòng
+    </label>
   </div>
 
   <div class="table-wrapper" *ngIf="!loading">
     <table class="courses-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Tiêu đề</th>
-          <th>Ngôn ngữ</th>
-          <th>Cấp độ</th>
-          <th>Học phí</th>
-          <th>Giảng viên</th>
-          <th>Sĩ số</th>
-          <th>Trạng thái</th>
-          <th>Thao tác</th>
+          <th>ID</th><th>Tiêu đề</th><th>Ngôn ngữ</th><th>Cấp độ</th><th>Học phí</th><th>Giảng viên</th><th>Sĩ số</th><th>Trạng thái</th><th>Thao tác</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let course of courses">
-          <td>{{ course.id }}</td>
-          <td>{{ course.title }}</td>
-          <td>{{ course.language }}</td>
-          <td>{{ course.level }}</td>
-          <td>{{ course.tuition_fee | number:'1.0-0' }}đ</td>
-          <td>{{ course.instructor_name || '—' }}</td>
-          <td>
-            <span [class.text-danger]="course.max_students && course.enrolled_count >= course.max_students">
-              {{ course.enrolled_count || 0 }}
-              <ng-container *ngIf="course.max_students"> / {{ course.max_students }}</ng-container>
-            </span>
-          </td>
-          <td>
+        <tr *ngFor="let course of paginatedCourses">
+          <td data-label="ID">{{ course.id }}</td>
+          <td data-label="Tiêu đề">{{ course.title }}</td>
+          <td data-label="Ngôn ngữ">{{ course.language }}</td>
+          <td data-label="Cấp độ">{{ course.level }}</td>
+          <td data-label="Học phí">{{ course.tuition_fee | number:'1.0-0' }}đ</td>
+          <td data-label="Giảng viên">{{ course.instructor_name || '—' }}</td>
+          <td data-label="Sĩ số"><span [class.text-danger]="course.max_students && (course.enrolled_count || 0) >= course.max_students">{{ course.enrolled_count || 0 }}<ng-container *ngIf="course.max_students"> / {{ course.max_students }}</ng-container></span></td>
+          <td data-label="Trạng thái">
             <span class="badge badge-upcoming" *ngIf="course.status === 'upcoming'">Sắp khai giảng</span>
             <span class="badge badge-ongoing" *ngIf="course.status === 'ongoing'">Đang học</span>
             <span class="badge badge-finished" *ngIf="course.status === 'finished'">Kết thúc</span>
           </td>
-          <td class="actions">
-            <button type="button" class="btn-edit" (click)="openEdit(course)">Sửa</button>
-            <button type="button" class="btn-delete" (click)="onDelete(course)">Xóa</button>
-          </td>
+          <td data-label="Thao tác" class="actions"><button type="button" class="btn-edit" (click)="openEdit(course)">Sửa</button><button type="button" class="btn-delete" (click)="onDelete(course)">Xóa</button></td>
         </tr>
       </tbody>
     </table>
+    <div *ngIf="filteredCourses.length === 0" class="empty-state">Không tìm thấy khóa học phù hợp.</div>
+  </div>
+
+  <div class="pagination" *ngIf="!loading && filteredCourses.length > 0">
+    <span class="pagination-info">{{ (currentPage - 1) * pageSize + 1 }} - {{ currentPage * pageSize > filteredCourses.length ? filteredCourses.length : currentPage * pageSize }} / {{ filteredCourses.length }}</span>
+    <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+    <button type="button" *ngFor="let page of visiblePages" [class.active]="page === currentPage" (click)="changePage(page)">{{ page }}</button>
+    <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
   </div>
 
   <div class="loading" *ngIf="loading">Đang tải...</div>
 </div>
 
-<!-- Form overlay -->
 <div class="form-overlay" *ngIf="showForm" (click)="closeForm()">
   <div class="form-card" (click)="$event.stopPropagation()">
     <h2>{{ editingCourse ? 'Sửa khóa học' : 'Thêm khóa học' }}</h2>
-
     <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="title">Tiêu đề <span class="required">*</span></label>
-        <input id="title" type="text" formControlName="title" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="language">Ngôn ngữ <span class="required">*</span></label>
-        <input id="language" type="text" formControlName="language" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="level">Cấp độ <span class="required">*</span></label>
-        <input id="level" type="text" formControlName="level" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="tuition_fee">Học phí <span class="required">*</span></label>
-        <input id="tuition_fee" type="number" formControlName="tuition_fee" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="duration">Thời lượng <span class="required">*</span></label>
-        <input id="duration" type="text" formControlName="duration" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="schedule">Lịch học <span class="required">*</span></label>
-        <input id="schedule" type="text" formControlName="schedule" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="max_students">Số học viên tối đa</label>
-        <input id="max_students" type="number" formControlName="max_students" class="form-input" min="1" placeholder="Để trống = không giới hạn" />
-      </div>
-
-      <div class="form-group">
-        <label for="start_date">Ngày khai giảng</label>
-        <input id="start_date" type="date" formControlName="start_date" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="status">Trạng thái lớp học</label>
-        <select id="status" formControlName="status" class="form-input">
-          <option value="upcoming">Sắp khai giảng</option>
-          <option value="ongoing">Đang học</option>
-          <option value="finished">Kết thúc</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="short_description">Mô tả ngắn</label>
-        <input id="short_description" type="text" formControlName="short_description" class="form-input" />
-      </div>
-
-      <div class="form-group">
-        <label for="description">Mô tả chi tiết</label>
-        <textarea id="description" formControlName="description" class="form-input form-textarea" rows="4"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="instructor_id">Giảng viên</label>
-        <select id="instructor_id" formControlName="instructor_id" class="form-input">
-          <option [ngValue]="null">-- Chọn giảng viên --</option>
-          <option *ngFor="let inst of instructors" [ngValue]="inst.id">{{ inst.full_name }} ({{ inst.specialization }})</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="image_url">URL hình ảnh</label>
-        <input id="image_url" type="text" formControlName="image_url" class="form-input" />
-      </div>
-
-      <div class="form-group form-group-checkbox">
-        <label>
-          <input type="checkbox" formControlName="is_active" [value]="1" />
-          Đang hoạt động
-        </label>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn-cancel" (click)="closeForm()">Hủy</button>
-        <button type="submit" [class.btn-save]="editingCourse" [class.btn-add-form]="!editingCourse" [disabled]="formLoading">
-          {{ editingCourse ? 'Lưu' : 'Thêm' }}
-        </button>
-      </div>
+      <div class="form-group"><label for="title">Tiêu đề <span class="required">*</span></label><input id="title" type="text" formControlName="title" class="form-input" /></div>
+      <div class="form-group"><label for="language">Ngôn ngữ <span class="required">*</span></label><input id="language" type="text" formControlName="language" class="form-input" /></div>
+      <div class="form-group"><label for="level">Cấp độ <span class="required">*</span></label><input id="level" type="text" formControlName="level" class="form-input" /></div>
+      <div class="form-group"><label for="tuition_fee">Học phí <span class="required">*</span></label><input id="tuition_fee" type="number" formControlName="tuition_fee" class="form-input" /></div>
+      <div class="form-group"><label for="duration">Thời lượng <span class="required">*</span></label><input id="duration" type="text" formControlName="duration" class="form-input" /></div>
+      <div class="form-group"><label for="schedule">Lịch học <span class="required">*</span></label><input id="schedule" type="text" formControlName="schedule" class="form-input" /></div>
+      <div class="form-group"><label for="max_students">Số học viên tối đa</label><input id="max_students" type="number" formControlName="max_students" class="form-input" min="1" placeholder="Để trống = không giới hạn" /></div>
+      <div class="form-group"><label for="start_date">Ngày khai giảng</label><input id="start_date" type="date" formControlName="start_date" class="form-input" /></div>
+      <div class="form-group"><label for="status">Trạng thái lớp học</label><select id="status" formControlName="status" class="form-input"><option value="upcoming">Sắp khai giảng</option><option value="ongoing">Đang học</option><option value="finished">Kết thúc</option></select></div>
+      <div class="form-group"><label for="short_description">Mô tả ngắn</label><input id="short_description" type="text" formControlName="short_description" class="form-input" /></div>
+      <div class="form-group"><label for="description">Mô tả chi tiết</label><textarea id="description" formControlName="description" class="form-input form-textarea" rows="4"></textarea></div>
+      <div class="form-group"><label for="instructor_id">Giảng viên</label><select id="instructor_id" formControlName="instructor_id" class="form-input"><option [ngValue]="null">-- Chọn giảng viên --</option><option *ngFor="let inst of instructors" [ngValue]="inst.id">{{ inst.full_name }} ({{ inst.specialization }})</option></select></div>
+      <div class="form-group"><label for="image_url">URL hình ảnh</label><input id="image_url" type="text" formControlName="image_url" class="form-input" /></div>
+      <div class="form-group form-group-checkbox"><label><input type="checkbox" formControlName="is_active" [value]="1" /> Đang hoạt động</label></div>
+      <div class="form-actions"><button type="button" class="btn-cancel" (click)="closeForm()">Hủy</button><button type="submit" [class.btn-save]="editingCourse" [class.btn-add-form]="!editingCourse" [disabled]="formLoading">{{ editingCourse ? 'Lưu' : 'Thêm' }}</button></div>
     </form>
   </div>
 </div>

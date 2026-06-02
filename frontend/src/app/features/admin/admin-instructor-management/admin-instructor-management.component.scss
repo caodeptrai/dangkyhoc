@@ -18,3 +18,24 @@
 .form-group { flex: 1; margin-bottom: 16px; label { display: block; margin-bottom: 6px; font-weight: 500; color: #555; font-size: 0.9rem; } input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; &:focus { border-color: #42a5f5; outline: none; } } textarea { resize: vertical; } }
 .checkbox-group label { display: flex; align-items: center; gap: 8px; cursor: pointer; input[type="checkbox"] { width: 18px; height: 18px; } }
 .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; }
+
+.management-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+.search-input { flex: 1; min-width: 260px; padding: 12px 14px; border: 1px solid #d9e1ec; border-radius: 10px; font-size: 0.95rem; }
+.page-size-label { display: flex; align-items: center; gap: 8px; color: #607080; select { padding: 8px 10px; border: 1px solid #d9e1ec; border-radius: 8px; } }
+.pagination { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.pagination-info { color: #607080; margin-right: 8px; }
+.pagination button { border: 1px solid #d9e1ec; background: #fff; color: #263238; min-width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-weight: 600; &:disabled { opacity: 0.5; cursor: not-allowed; } &.active { background: #1a237e; color: #fff; border-color: #1a237e; } }
+.row-actions { white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .admin-page { padding: 18px 12px; }
+  .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .btn-primary, .search-input, .page-size-label, .page-size-label select { width: 100%; }
+  .table-wrapper { overflow-x: visible; background: transparent; box-shadow: none; }
+  .data-table { border-collapse: separate; border-spacing: 0 12px; thead { display: none; } tbody tr { display: block; background: #fff; border: 1px solid #e6edf5; border-radius: 14px; padding: 10px 12px; box-shadow: 0 4px 16px rgba(15,23,42,0.06); } td { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid #edf2f7; text-align: right; word-break: break-word; &::before { content: attr(data-label); font-weight: 700; color: #455a64; text-align: left; } &:last-child { border-bottom: 0; } } }
+  .instructor-info { justify-content: flex-end; }
+  .title-col { white-space: normal; max-width: none; }
+  .row-actions { justify-content: flex-end; }
+  .pagination { justify-content: center; }
+  .modal-content { width: calc(100% - 24px); padding: 22px 16px; }
+}
