@@ -3,10 +3,9 @@ const app = require('../src/app');
 
 describe('Contact API - Public', () => {
   const validContact = {
-    name: 'Test Contact',
+    full_name: 'Test Contact',
     email: 'contact@example.com',
     phone: '0912345678',
-    subject: 'Test Subject',
     message: 'This is a test message'
   };
 
@@ -21,9 +20,9 @@ describe('Contact API - Public', () => {
       console.log('TC012: Contact created successfully');
     });
 
-    test('TC013: Reject contact without subject', async () => {
+    test('TC013: Reject contact without message', async () => {
       const invalidData = { ...validContact };
-      delete invalidData.subject;
+      delete invalidData.message;
 
       const response = await request(app)
         .post('/api/contacts')
@@ -31,7 +30,7 @@ describe('Contact API - Public', () => {
         .expect('Content-Type', /json/);
 
       expect(response.body.success).toBe(false);
-      console.log('TC013: Rejected contact without subject');
+      console.log('TC013: Rejected contact without message');
     });
 
     test('TC014: Reject contact with invalid email', async () => {

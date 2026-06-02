@@ -28,7 +28,7 @@
           <td>{{ course.tuition_fee | number:'1.0-0' }}đ</td>
           <td>{{ course.instructor_name || '—' }}</td>
           <td>
-            <span [class.text-danger]="course.max_students && course.enrolled_count >= course.max_students">
+            <span [class.text-danger]="course.max_students && (course.enrolled_count || 0) >= course.max_students">
               {{ course.enrolled_count || 0 }}
               <ng-container *ngIf="course.max_students"> / {{ course.max_students }}</ng-container>
             </span>
